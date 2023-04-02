@@ -1,0 +1,8 @@
+# do not track data
+/data/**
+
+/util/__pycache__
+
+**test**
+
+**/.DS_Store

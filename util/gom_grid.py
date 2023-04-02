@@ -46,3 +46,20 @@ def lat_lon_points(
     geometry = geopandas.points_from_xy(df.longitude, df.latitude, crs="EPSG:4326")
 
     return geometry
+
+
+def mask_point_grid_in_polygon(gom_points: geopandas.GeoSeries, polygon: geopandas.GeoSeries, point_coordinates: Dict, mask_value: int = 1) -> np.ndarray:
+
+    polygon_overlap_grid = np.zeros((len(point_coordinates["lat"]), len(point_coordinates["lon"])))
+
+    if polygon is not None:
+
+        for point in gom_points:
+            if polygon.contains(point):
+                lonval = point.x
+                latval = point.y
+                lonidx = list(point_coordinates["lon"]).index(lonval)
+                latidx = list(point_coordinates["lat"]).index(latval)
+                polygon_overlap_grid[latidx, lonidx] = mask_value
+
+    return polygon_overlap_grid

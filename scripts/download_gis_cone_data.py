@@ -25,7 +25,7 @@ cone_records = sorted([
     and not ("b.zip" in fl)
     and not ("latest.zip" in fl)
     and ("al" in fl)
-])
+])  
 
 for num, record in enumerate(cone_records):
     filename = record.split("/")[-1]
@@ -47,3 +47,31 @@ for file in fls_to_unzip:
     os.remove(f"{gis_datadir}{file}")
 
 [subprocess.run(["unzip", f"{gis_datadir}{file}", "-d", f"{gis_datadir}{file.split('.')[0]}"]) for file in fls_to_unzip]
+
+
+
+windprob_records = sorted([
+    fl for fl in gis_records
+    if ("_wsp_120hr5km" in fl)
+])  
+
+for num, record in enumerate(windprob_records):
+    filename = record.split("/")[-1]
+    if not os.path.isfile(f"{gis_datadir}{filename}"):
+        print(num+1, filename)
+        try:
+            urllib.request.urlretrieve(record, f"{gis_datadir}{filename}")
+
+        except urllib.error.HTTPError:
+            continue
+
+
+fls_to_unzip = sorted([fl for fl in os.listdir(gis_datadir) if ".zip" in fl])
+
+for file in fls_to_unzip:
+    print(file)
+    unzip_command = ["unzip", f"{gis_datadir}{file}", "-d", f"{gis_datadir}{file.split('.')[0]}"]
+    subprocess.run(unzip_command)
+    os.remove(f"{gis_datadir}{file}")
+
+
